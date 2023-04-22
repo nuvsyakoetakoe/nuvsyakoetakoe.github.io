@@ -1,20 +1,22 @@
 /* Общие стили и шрифты */
 body {
-    font-family: "Roboto Mono", monospace;
-    background-color: #000;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-  
-  .container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
+  font-family: "Roboto Mono", monospace;
+  background-color: #000;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 800px; /* Устанавливаем максимальную ширину */
+  margin: 0 auto; /* Выравниваем контейнер по центру */
+}
   
   .btn {
     font-size: 24px;
