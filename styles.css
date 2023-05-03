@@ -1,0 +1,111 @@
+body {
+  background-color: black;
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  min-height: 100vh;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.about-page {
+  display: block;
+}
+
+.about-container a {
+  color: #778899; /* светло-графитовый цвет */
+  text-decoration: none;
+}
+
+.about-container a:hover {
+  text-decoration: underline;
+}
+
+.about-container {
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.button, .non-animated-button {
+  display: inline-block;
+  background-color: white;
+  color: black;
+  text-decoration: none;
+  padding: 10px;
+  margin: 5px;
+  font-size: 20px;
+}
+
+.non-animated-button {
+  transition: none !important;
+}
+
+.about-title {
+  font-weight: 400;
+  background-color: white;
+  color: black;
+  padding: 10px;
+  margin: 0 0 1rem;
+  font-size: 20px;
+}
+
+p {
+  margin: 0 0 1rem;
+  color: white;
+}
+
+.back-to-home-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.back-to-home {
+  display: inline-block;
+  margin-left: 0;
+}
+
+.button.back-to-home {
+  color: #000000;
+  text-decoration: none;
+}
+
+.button.back-to-home:hover {
+  color: #000000;
+  text-decoration: none;
+}
+
+
+.photo-gallery {
+  margin-bottom: 20px;
+}
+
+.photo-gallery img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  border: 10px solid white;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+}
+
+.grid-item {
+  width: calc(25% - 10px);
+  margin-bottom: 10px;
+}
+
+
+/* Стили для мобильных устройств */
+@media (max-width: 500px) {
+  .button, .non-animated-button {
+    font-size: 18px;
+  }
+}
