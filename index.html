@@ -578,14 +578,19 @@
         function extractImageUrl(formula) {
             if (!formula) return 'https://placehold.co/600x400?text=Изображение+недоступно';
             
-            // Попытка извлечь URL из формулы IMAGE("url")
-            const match = formula.match(/https?:\/\/[^\s"]+/);
-            if (match) return match[0].trim();
+            // Попытка извлечь URL из формулы IMAGE("url"; 2) или IMAGE("url", 2)
+            // Учитываем как точку с запятой, так и запятую как разделитель
+            const match = formula.match(/https?:\/\/[^\s";,]+/);
+            if (match) {
+                // Убираем возможные пробелы в конце URL
+                return match[0].trim();
+            }
             
-            // Если это уже прямой URL
+            // Если это уже прямой URL (на всякий случай)
             if (formula.startsWith('http')) return formula.trim();
             
             // Возврат заглушки если ничего не найдено
+            console.log("Не удалось извлечь URL из формулы:", formula); // Для отладки
             return 'https://placehold.co/600x400?text=Изображение+недоступно';
         }
 
