@@ -592,27 +592,39 @@
         // Парсинг ID ресторанов из ячейки
         function parseRestaurantIds(cell) {
             if (!cell) return [];
-            const str = cell.toString();
+            const str = cell.toString().trim();
+            
+            // Удаляем все кроме цифр и запятых
+            const cleanStr = str.replace(/[^0-9,\[\]]/g, '');
             
             // Проверка на формат [1, 2, 3, ...]
-            const arrayMatch = str.match(/\[([^\]]+)\]/);
+            const arrayMatch = cleanStr.match(/\[([0-9,]+)\]/);
             if (arrayMatch && arrayMatch[1]) {
                 return arrayMatch[1].split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id));
             }
             
-            // Проверка на формат с HYPERLINK
-            const hyperlinkMatch = str.match(/(?:\d+\s*,\s*)*\d+/g);
-            if (hyperlinkMatch) {
-                return hyperlinkMatch.join(',').split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id));
+            // Проверка на формат с перечислением через запятую
+            const commaMatch = cleanStr.match(/(?:\d+\s*,\s*)*\d+/g);
+            if (commaMatch) {
+                return cleanStr.split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id));
             }
             
             // Если это просто число
-            const singleId = parseInt(str);
+            const singleId = parseInt(cleanStr);
             if (!isNaN(singleId)) {
                 return [singleId];
             }
             
             return [];
+        }
+
+        // Очистка адреса от лишних символов
+        function cleanAddress(address) {
+            if (!address) return '';
+            return address
+                .replace(/[^\w\sа-яА-ЯёЁ\-.,]/gi, '') // Удаляем специальные символы кроме букв, цифр, пробелов и некоторых знаков
+                .replace(/\s+/g, ' ') // Заменяем множественные пробелы на один
+                .trim();
         }
 
         // Загрузка данных с листа
@@ -640,7 +652,7 @@
                 for (let i = 1; i < restaurantRows.length; i++) {
                     const row = restaurantRows[i];
                     const id = row[0];
-                    const address = row[2];
+                    const address = cleanAddress(row[2]); // Очищаем адрес
                     if (id && address) {
                         restaurants[id] = address;
                     }
@@ -806,7 +818,7 @@
             renderCoupons(filteredCoupons);
         }
 
-        // Filter restaurants based on search
+        // Filter restaurants based on search with improved logic
         function filterRestaurants(query) {
             if (!query) {
                 suggestionsContainer.style.display = 'none';
@@ -814,10 +826,21 @@
                 return;
             }
             
+            // Очищаем запрос от лишних символов
+            const cleanQuery = query.trim().toLowerCase();
+            
+            // Фильтруем рестораны по подстрокам
             const filtered = Object.entries(restaurants)
-                .filter(([id, address]) => address.toLowerCase().includes(query.toLowerCase()))
+                .filter(([id, address]) => {
+                    // Приводим адрес к нижнему регистру для сравнения
+                    const lowerAddress = address.toLowerCase();
+                    // Разбиваем запрос на слова
+                    const queryWords = cleanQuery.split(/\s+/);
+                    // Проверяем, содержит ли адрес все слова запроса
+                    return queryWords.every(word => lowerAddress.includes(word));
+                })
                 .map(([id, address]) => ({ id: parseInt(id), address }))
-                .slice(0, 8); // Limit to 8 suggestions
+                .slice(0, 15); // Увеличиваем лимит до 15
             
             showSuggestions(filtered);
         }
