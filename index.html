@@ -6,6 +6,7 @@
     <title>Купоны Burger King</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Стили остались без изменений */
         * {
             margin: 0;
             padding: 0;
@@ -574,16 +575,17 @@
             return JSON.parse(jsonString);
         }
 
-        // Извлечение URL изображения из формулы IMAGE()
+        // Улучшенная функция извлечения URL изображения из формулы IMAGE()
         function extractImageUrl(formula) {
             if (!formula) return 'https://placehold.co/600x400?text=Изображение+недоступно';
             
             // Попытка извлечь URL из формулы IMAGE("url")
+            // Учитываем возможные пробелы и другие символы
             const match = formula.match(/https?:\/\/[^\s"]+/);
-            if (match) return match[0];
+            if (match) return match[0].trim();
             
             // Если это уже прямой URL
-            if (formula.startsWith('http')) return formula;
+            if (formula.startsWith('http')) return formula.trim();
             
             // Возврат заглушки если ничего не найдено
             return 'https://placehold.co/600x400?text=Изображение+недоступно';
@@ -666,7 +668,7 @@
                     const row = couponRows[i];
                     if (!row[2]) continue; // Пропускаем пустые строки
                     
-                    const imageFormula = row[0] || '';
+                    const imageFormula = row[0] || ''; // Столбец A с формулой IMAGE
                     const imageUrl = extractImageUrl(imageFormula);
                     const name = row[2] || '';
                     const description = row[3] || '';
@@ -818,7 +820,7 @@
             renderCoupons(filteredCoupons);
         }
 
-        // Filter restaurants based on search with improved logic
+        // Улучшенная функция фильтрации ресторанов
         function filterRestaurants(query) {
             if (!query) {
                 suggestionsContainer.style.display = 'none';
@@ -826,7 +828,7 @@
                 return;
             }
             
-            // Очищаем запрос от лишних символов
+            // Очищаем запрос от лишних символов и приводим к нижнему регистру
             const cleanQuery = query.trim().toLowerCase();
             
             // Фильтруем рестораны по подстрокам
@@ -840,7 +842,7 @@
                     return queryWords.every(word => lowerAddress.includes(word));
                 })
                 .map(([id, address]) => ({ id: parseInt(id), address }))
-                .slice(0, 15); // Увеличиваем лимит до 15
+                .slice(0, 20); // Увеличиваем лимит до 20
             
             showSuggestions(filtered);
         }
