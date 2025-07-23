@@ -576,24 +576,42 @@
 
         // Извлечение URL изображения из формулы IMAGE()
         function extractImageUrl(formula) {
-            if (!formula) return '';
+            if (!formula) return 'https://placehold.co/600x400?text=Изображение+недоступно';
+            
+            // Попытка извлечь URL из формулы IMAGE("url")
             const match = formula.match(/https?:\/\/[^\s"]+/);
-            return match ? match[0] : 'https://placehold.co/600x400?text=Изображение+недоступно';
+            if (match) return match[0];
+            
+            // Если это уже прямой URL
+            if (formula.startsWith('http')) return formula;
+            
+            // Возврат заглушки если ничего не найдено
+            return 'https://placehold.co/600x400?text=Изображение+недоступно';
         }
 
         // Парсинг ID ресторанов из ячейки
         function parseRestaurantIds(cell) {
             if (!cell) return [];
             const str = cell.toString();
-            const match = str.match(/\[([^\]]+)\]/);
-            if (match && match[1]) {
-                return match[1].split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id));
+            
+            // Проверка на формат [1, 2, 3, ...]
+            const arrayMatch = str.match(/\[([^\]]+)\]/);
+            if (arrayMatch && arrayMatch[1]) {
+                return arrayMatch[1].split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id));
             }
+            
+            // Проверка на формат с HYPERLINK
+            const hyperlinkMatch = str.match(/(?:\d+\s*,\s*)*\d+/g);
+            if (hyperlinkMatch) {
+                return hyperlinkMatch.join(',').split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id));
+            }
+            
             // Если это просто число
             const singleId = parseInt(str);
             if (!isNaN(singleId)) {
                 return [singleId];
             }
+            
             return [];
         }
 
